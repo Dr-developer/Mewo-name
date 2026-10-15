@@ -24,7 +24,7 @@ export const content = {
     /** Each item is rendered as its own line. */
     lines: ['یه نامه بود که باید به دستت می‌رسید…', 'اما باد زودتر از من پیداش کرد.'],
     /** Shown under the intro text. Explains the on-screen touch controls. */
-    instruction: 'با لمس دکمه‌های پایین صفحه، گربه را به سمت نامه‌ها هدایت کن.',
+    instruction: 'با لمس دکمه‌های پایین صفحه، پیشی  را به سمت نامه‌ها هدایت کن.',
     startButton: 'بریم دنبالش',
   },
 
@@ -36,7 +36,7 @@ export const content = {
     'می‌دونم کاری کردم که ناراحتت کرد.',
     'حق داری ازم دلخور باشی.',
     'نمی‌خوام برای رفتارم بهونه بیارم.',
-    'می‌خوام با رفتارم، نه فقط با حرف، جبرانش کنم.',
+    'ولی من همیشه ، در حالتی به فکرتم ...',
   ] as const,
 
   fragmentDialog: {
@@ -55,18 +55,18 @@ export const content = {
    */
   finalLetter: {
     isPlaceholder: true,
-    heading: 'نامه',
-    greeting: 'سلام،',
+    heading: 'میوعذرخواهی ',
+    greeting: 'میول،',
     /** If true, the four collected pieces are shown as the opening paragraph. */
     includeFragments: true,
     paragraphs: [
-      '[متن نمونه — با حرف‌های خودت جایگزین کن]',
-      'این نامه رو نوشتم چون نمی‌خواستم حرفم لابه‌لای روزمرگی گم بشه.',
-      'ازت نمی‌خوام زود ببخشی یا چیزی رو فراموش کنی. فقط می‌خواستم بدونی که می‌بینمش و برام مهمه.',
-      'هر وقت خواستی، آماده‌ام که بشنوم.',
+      'می دونم خیلی وقتا نبودم، می دونم خیلی سرم شلوغ بوده ',
+      'می دونم خیلی وقتا گاو بودم ، می دونم خیلی وقتا اذیتت کردم ',
+      'ولی همیشه دوست دارم، همیشه یک بخش از ذهن و قبل منی ',
+      'نمی خوام ببخشیم ، می خوام بدونی دوست دارم ',
     ],
-    signOff: 'با همه‌ی صداقتم،',
-    signature: '[اسم تو]',
+    signOff: 'پیشی که خیلی بده ',
+    signature: 'امیو',
   },
 
   buttons: {
@@ -97,7 +97,7 @@ export const content = {
     right: 'برو راست',
   },
 
-  placeholderBadge: 'متن نمونه — پیش از انتشار عوض شود',
+  placeholderBadge: '',
 } as const;
 
 /**
