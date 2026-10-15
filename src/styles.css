@@ -1,0 +1,624 @@
+/* ───────────── Font (bundled locally, SIL OFL — see public/licenses) ───────────── */
+@font-face {
+  font-family: 'Vazirmatn';
+  src: url('./assets/fonts/Vazirmatn-Variable.woff2') format('woff2-variations'),
+    url('./assets/fonts/Vazirmatn-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #4b3a47;
+  --ink-soft: #7a6672;
+  --paper: #fffaf2;
+  --paper-edge: #ecdccf;
+  --rose: #c9788a;
+  --rose-deep: #a95c72;
+  --rose-light: #f6dadd;
+  --cream: #fff8ee;
+  --btn: 76px;
+  --btn-gap: 20px;
+  --edge: 18px;
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  font-family: 'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+  color: var(--ink);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  /* Dusk sky. The Phaser canvas is transparent and draws on top of this. */
+  background: linear-gradient(180deg, #cdb8d4 0%, #e8bfc8 32%, #f6d2c6 62%, #fbe4cf 100%);
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+/* ───────────── App shell ───────────── */
+.app {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.game-host {
+  position: absolute;
+  inset: 0;
+}
+
+.game-host canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Same footprint as the touch controls; read by the scene for framing. */
+.controls-reserve {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  height: calc(var(--btn) + var(--edge) + 14px + var(--safe-b));
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ───────────── Buttons ───────────── */
+.btn {
+  min-height: 52px;
+  min-width: 9.5rem;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
+  border: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:focus-visible,
+.icon-btn:focus-visible {
+  outline: 3px solid #f3d36b;
+  outline-offset: 3px;
+}
+
+/* Touch screens: no focus ring from programmatic (auto) focus */
+@media (hover: none) {
+  .btn:focus-visible {
+    outline: none;
+  }
+}
+
+.btn--primary {
+  background: var(--rose-deep);
+  color: #fffaf5;
+  box-shadow: 0 6px 18px rgba(169, 92, 114, 0.32);
+}
+
+.btn--primary:hover {
+  background: #9c5168;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--rose-deep);
+  border: 2px solid rgba(169, 92, 114, 0.35);
+}
+
+.btn--on-scene {
+  background: rgba(255, 250, 242, 0.85);
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(75, 58, 71, 0.06);
+}
+
+/* ───────────── Overlays ───────────── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(16px + var(--safe-t)) calc(16px + var(--safe-r)) calc(16px + var(--safe-b)) calc(16px + var(--safe-l));
+  z-index: 20;
+  animation: fade-in 0.45s ease both;
+}
+
+.overlay--intro {
+  background: linear-gradient(180deg, rgba(255, 246, 238, 0.35), rgba(255, 246, 238, 0.65));
+}
+
+.overlay--dim {
+  background: rgba(64, 44, 58, 0.28);
+}
+
+.overlay--letter {
+  background: rgba(64, 44, 58, 0.34);
+  align-items: stretch;
+  padding: 0;
+}
+
+.card {
+  width: min(100%, 27rem);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  background: var(--paper);
+  border-radius: 24px;
+  box-shadow: 0 18px 50px rgba(75, 45, 60, 0.22);
+  padding: 28px 22px 24px;
+  text-align: center;
+  animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* ── Intro ── */
+.intro-envelope {
+  width: 64px;
+  height: 44px;
+  margin: 0 auto 6px;
+  display: block;
+  animation: float 3.6s ease-in-out infinite;
+}
+
+.intro-title {
+  margin: 0.2rem 0 0.6rem;
+  font-size: clamp(1.55rem, 7vw, 2rem);
+  font-weight: 800;
+  color: var(--rose-deep);
+  line-height: 1.5;
+}
+
+.intro-lines {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.08rem, 4.6vw, 1.25rem);
+  line-height: 2;
+}
+
+.intro-line {
+  display: block;
+  animation: rise 0.8s ease both;
+}
+
+.intro-instruction {
+  margin: 0.5rem auto 1.3rem;
+  max-width: 21rem;
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--ink-soft);
+}
+
+.controls-preview {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  direction: ltr; /* arrows keep their physical order */
+}
+
+.controls-preview__key {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--rose-light);
+  color: var(--rose-deep);
+}
+
+.controls-preview__key svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ── Fragment dialog ── */
+.fragment-heading {
+  margin: 0 0 0.9rem;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.paper {
+  background: #fffdf8;
+  border: 1px solid var(--paper-edge);
+  border-radius: 14px;
+  box-shadow: 0 2px 0 rgba(185, 133, 127, 0.15);
+}
+
+.paper--piece {
+  padding: 1.3rem 1.1rem;
+  transform: rotate(-1.2deg);
+  background-image: repeating-linear-gradient(180deg, transparent 0 2.35rem, rgba(201, 120, 138, 0.13) 2.35rem calc(2.35rem + 1px));
+}
+
+.fragment-text {
+  margin: 0;
+  font-size: clamp(1.25rem, 5.4vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.95;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 1.2rem 0 1.2rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--paper-edge);
+  transition: background-color 0.3s ease;
+}
+
+.dot.is-on {
+  background: var(--rose);
+}
+
+/* ── HUD ── */
+.hud {
+  position: absolute;
+  top: calc(12px + var(--safe-t));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(255, 250, 242, 0.82);
+  box-shadow: 0 4px 14px rgba(75, 45, 60, 0.14);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hud-pieces {
+  display: flex;
+  gap: 5px;
+}
+
+.hud-piece {
+  width: 18px;
+  height: 13px;
+  border-radius: 3px;
+  border: 1.5px dashed rgba(169, 92, 114, 0.45);
+  transition: background-color 0.4s ease, border-color 0.4s ease, transform 0.4s ease;
+}
+
+.hud-piece.is-found {
+  background: var(--paper);
+  border: 1.5px solid var(--rose);
+  transform: rotate(-4deg);
+}
+
+.hud-count {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 3.2em;
+  text-align: center;
+}
+
+.toast {
+  position: absolute;
+  top: calc(64px + var(--safe-t));
+  left: 50%;
+  transform: translate(-50%, -6px);
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: rgba(255, 250, 242, 0.9);
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.8;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(75, 45, 60, 0.12);
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast:empty {
+  padding: 0;
+}
+
+/* ───────────── Touch controls ───────────── */
+.touch-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 14px calc(var(--edge) + var(--safe-r)) calc(var(--edge) + var(--safe-b)) calc(var(--edge) + var(--safe-l));
+  direction: ltr; /* ← stays on the left, → on the right, even in RTL */
+  pointer-events: none; /* only the buttons themselves take touches */
+  z-index: 15;
+  animation: fade-in 0.35s ease both;
+}
+
+.touch-group {
+  display: flex;
+  gap: var(--btn-gap);
+  pointer-events: none;
+}
+
+.touch-btn {
+  pointer-events: auto;
+  width: var(--btn);
+  height: var(--btn);
+  border-radius: 50%;
+  border: 2px solid rgba(120, 88, 104, 0.22);
+  background: rgba(255, 250, 242, 0.8);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  box-shadow: 0 6px 16px rgba(75, 45, 60, 0.18);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.08s ease, background-color 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+}
+
+.touch-btn--jump {
+  background: rgba(255, 244, 236, 0.86);
+}
+
+.touch-btn.is-pressed {
+  transform: scale(0.92);
+  background: var(--rose-light);
+  color: var(--rose-deep);
+  box-shadow: 0 2px 6px rgba(75, 45, 60, 0.18);
+  border-color: rgba(169, 92, 114, 0.45);
+}
+
+.touch-btn svg {
+  pointer-events: none;
+}
+
+/* ───────────── Final letter ───────────── */
+.letter-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(20px + var(--safe-t)) calc(16px + var(--safe-r)) calc(24px + var(--safe-b)) calc(16px + var(--safe-l));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.paper--letter {
+  position: relative;
+  width: min(100%, 34rem);
+  margin: auto 0 0;
+  padding: 2.4rem 1.5rem 1.8rem;
+  text-align: start;
+  user-select: text;
+  -webkit-user-select: text;
+  animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  box-shadow: 0 18px 50px rgba(75, 45, 60, 0.25);
+  background-color: #fffdf8;
+}
+
+.letter-close {
+  position: absolute;
+  top: 8px;
+  left: 8px; /* visual end side in RTL */
+}
+
+.placeholder-badge {
+  display: inline-block;
+  margin: 0 0 0.6rem;
+  padding: 2px 10px;
+  border-radius: 8px;
+  background: #fff1c9;
+  color: #7a5b16;
+  font-size: 0.82rem;
+}
+
+.letter-heading {
+  margin: 0 0 0.8rem;
+  font-size: 1.3rem;
+  color: var(--rose-deep);
+}
+
+.letter-greeting,
+.letter-p,
+.letter-signoff,
+.letter-signature {
+  margin: 0 0 1rem;
+  font-size: clamp(1.06rem, 4.3vw, 1.2rem);
+  line-height: 2.1;
+}
+
+.letter-greeting {
+  font-weight: 700;
+}
+
+.letter-p--pieces {
+  font-weight: 600;
+}
+
+.letter-signoff {
+  margin-top: 1.4rem;
+  margin-bottom: 0.2rem;
+}
+
+.letter-signature {
+  text-align: end;
+  font-weight: 700;
+  color: var(--rose-deep);
+}
+
+.reveal {
+  animation: rise 0.9s ease both;
+}
+
+.letter-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  width: min(100%, 34rem);
+  margin: 1rem 0 auto;
+}
+
+.letter-actions .btn--ghost {
+  background: rgba(255, 250, 242, 0.85);
+}
+
+.after-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px calc(16px + var(--safe-r)) calc(20px + var(--safe-b)) calc(16px + var(--safe-l));
+  z-index: 15;
+  animation: fade-in 0.6s ease both;
+}
+
+/* ───────────── Motion ───────────── */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-5px) rotate(-2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ───────────── Landscape phones ───────────── */
+@media (orientation: landscape) and (max-height: 520px) {
+  :root {
+    --btn: 66px;
+    --btn-gap: 16px;
+    --edge: 12px;
+  }
+
+  .card {
+    padding: 16px 20px;
+    width: min(100%, 34rem);
+  }
+
+  .intro-envelope {
+    display: none;
+  }
+
+  .intro-title {
+    margin: 0 0 0.2rem;
+    font-size: 1.4rem;
+  }
+
+  .intro-lines {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
+  }
+
+  .intro-instruction {
+    margin: 0.4rem auto 0.7rem;
+  }
+
+  .controls-preview__key {
+    width: 36px;
+    height: 36px;
+  }
+
+  .toast {
+    top: calc(56px + var(--safe-t));
+  }
+}
+
+/* Very small phones */
+@media (max-width: 350px) {
+  :root {
+    --btn: 68px;
+    --btn-gap: 14px;
+    --edge: 12px;
+  }
+}
