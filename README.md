@@ -8,36 +8,6 @@ readable overlay.
 Built with **React + TypeScript + Vite** and **Phaser 3**. Every graphic is drawn
 in code (no image files, no external URLs, no backend). All visible text is
 Persian and rendered RTL with a bundled font (Vazirmatn).
-
----
-
-## ✏️ Personalize it — edit one file
-
-Everything you would want to change lives in **`src/content/apology.ts`**:
-
-| What | Where in `apology.ts` |
-|---|---|
-| Game title (intro + browser tab) | `content.title` |
-| Intro lines, touch instruction, start button | `content.intro` |
-| **The four letter pieces** (in level order) | `content.fragments` — keep exactly 4 |
-| **The full final letter** ⚠ placeholder | `content.finalLetter` → `greeting`, `paragraphs`, `signOff`, `signature` |
-| Buttons «دوباره بخون» / «از اول بازی کن» | `content.buttons` (set `restart: ''` to hide the restart button) |
-| Gentle idle hints | `content.hints` |
-| **Cat colors** | `catColors` → `body`, `shadow`, `highlight`, `eyes`, `nose`, `outline` |
-| Walk speed, idle-hint delay | `gameTuning` |
-
-Before publishing:
-
-1. Replace the placeholder text in `content.finalLetter` with your own words.
-2. Set `finalLetter.isPlaceholder` to `false`. (While it is `true`, a small
-   yellow «متن نمونه» badge shows on the letter in dev mode, and a console
-   warning is printed in production.)
-3. Optionally set `finalLetter.includeFragments` to `false` if you don't want the
-   four collected sentences repeated at the top of the letter.
-
-The cat defaults to a black cat (`#17171C` body, `#F3D36B` eyes). The comment
-above `catColors` has a ready light-orange palette if you prefer.
-
 ---
 
 ## Run, build, deploy
