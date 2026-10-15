@@ -61,8 +61,10 @@ from a domain root **or** a sub-folder.
   connect the repo with build command `npm run build` and publish directory `dist`.
 - **Vercel** — import the repo; framework preset “Vite” (build `npm run build`,
   output `dist`).
-- **GitHub Pages** — push `dist/` to a `gh-pages` branch (e.g. `npx gh-pages -d dist`)
-  or use the official “Deploy static content” Pages workflow pointed at `dist/`.
+- **GitHub Pages** — already set up: `.github/workflows/deploy.yml` builds and
+  publishes on every push to `main`. One-time step: repo → **Settings → Pages →
+  Source: GitHub Actions**. The site appears at
+  `https://<your-username>.github.io/<repo-name>/`.
 - **Any web host** — upload the contents of `dist/`.
 
 Serve over HTTPS if you can; phones treat full-screen web apps better that way.
